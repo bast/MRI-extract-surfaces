@@ -29,14 +29,14 @@ fn main() {
     };
 
     let step = tiles::get_step_sizes(num_steps, &coordinates);
-    let tiles_to_points = tiles::distribute_points_to_tiles(&coordinates, step.x, step.z);
-    let tiles_to_triangles =
-        tiles::distribute_triangles_to_tiles(&coordinates, &triangles, step.x, step.z);
+    let (_, tiles_to_points_along_y) = tiles::distribute_points_to_tiles(&coordinates, step);
+    let (_, tiles_to_triangles_along_y) =
+        tiles::distribute_triangles_to_tiles(&coordinates, &triangles, step);
 
     let mut inside_points = HashSet::new();
-    for &(ix, iz) in tiles_to_points.keys() {
-        let triangles = &tiles_to_triangles[&(ix, iz)];
-        for point_index in &tiles_to_points[&(ix, iz)] {
+    for &(ix, iz) in tiles_to_points_along_y.keys() {
+        let triangles = &tiles_to_triangles_along_y[&(ix, iz)];
+        for point_index in &tiles_to_points_along_y[&(ix, iz)] {
             let x = coordinates[*point_index].x;
             let y = coordinates[*point_index].y;
             let z = coordinates[*point_index].z;

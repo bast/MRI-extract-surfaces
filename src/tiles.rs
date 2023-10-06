@@ -38,50 +38,74 @@ pub fn get_step_sizes(num_steps: usize, coordinates: &[Vector3]) -> Vector3 {
 
 pub fn distribute_points_to_tiles(
     coordinates: &[Vector3],
-    step_x: f64,
-    step_z: f64,
-) -> TileIndexMap {
-    let mut mapping = HashMap::new();
+    step: Vector3,
+) -> (TileIndexMap, TileIndexMap) {
+    let mut map_along_x = HashMap::new();
+    let mut map_along_y = HashMap::new();
 
     for (i, point) in coordinates.iter().enumerate() {
-        let ix = tile_index(point.x, 0.0, step_x);
-        let iz = tile_index(point.z, 0.0, step_z);
+        let ix = tile_index(point.x, 0.0, step.x);
+        let iy = tile_index(point.y, 0.0, step.y);
+        let iz = tile_index(point.z, 0.0, step.z);
 
-        mapping.entry((ix, iz)).or_insert(HashSet::new()).insert(i);
+        map_along_x
+            .entry((iy, iz))
+            .or_insert(HashSet::new())
+            .insert(i);
+        map_along_y
+            .entry((ix, iz))
+            .or_insert(HashSet::new())
+            .insert(i);
     }
 
-    mapping
+    (map_along_x, map_along_y)
 }
 
 pub fn distribute_triangles_to_tiles(
     coordinates: &[Vector3],
     triangles: &HashSet<Triplet>,
-    step_x: f64,
-    step_z: f64,
-) -> TileTripletMap {
-    let mut mapping = HashMap::new();
+    step: Vector3,
+) -> (TileTripletMap, TileTripletMap) {
+    let mut map_along_x = HashMap::new();
+    let mut map_along_y = HashMap::new();
 
     for (a, b, c) in triangles {
         let ax = coordinates[*a].x;
+        let ay = coordinates[*a].y;
         let az = coordinates[*a].z;
         let bx = coordinates[*b].x;
+        let by = coordinates[*b].y;
         let bz = coordinates[*b].z;
         let cx = coordinates[*c].x;
+        let cy = coordinates[*c].y;
         let cz = coordinates[*c].z;
 
         let triangle_x_min = ax.min(bx).min(cx);
         let triangle_x_max = ax.max(bx).max(cx);
+        let triangle_y_min = ay.min(by).min(cy);
+        let triangle_y_max = ay.max(by).max(cy);
         let triangle_z_min = az.min(bz).min(cz);
         let triangle_z_max = az.max(bz).max(cz);
 
-        let ix_min = tile_index(triangle_x_min, 0.0, step_x);
-        let ix_max = tile_index(triangle_x_max, 0.0, step_x);
-        let iz_min = tile_index(triangle_z_min, 0.0, step_z);
-        let iz_max = tile_index(triangle_z_max, 0.0, step_z);
+        let ix_min = tile_index(triangle_x_min, 0.0, step.x);
+        let ix_max = tile_index(triangle_x_max, 0.0, step.x);
+        let iy_min = tile_index(triangle_y_min, 0.0, step.y);
+        let iy_max = tile_index(triangle_y_max, 0.0, step.y);
+        let iz_min = tile_index(triangle_z_min, 0.0, step.z);
+        let iz_max = tile_index(triangle_z_max, 0.0, step.z);
+
+        for iy in iy_min..=iy_max {
+            for iz in iz_min..=iz_max {
+                map_along_x
+                    .entry((iy, iz))
+                    .or_insert(HashSet::new())
+                    .insert((*a, *b, *c));
+            }
+        }
 
         for ix in ix_min..=ix_max {
             for iz in iz_min..=iz_max {
-                mapping
+                map_along_y
                     .entry((ix, iz))
                     .or_insert(HashSet::new())
                     .insert((*a, *b, *c));
@@ -89,7 +113,7 @@ pub fn distribute_triangles_to_tiles(
         }
     }
 
-    mapping
+    (map_along_x, map_along_y)
 }
 
 fn tile_index(value: f64, origin_value: f64, step: f64) -> isize {
