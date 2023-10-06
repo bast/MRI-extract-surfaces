@@ -5,12 +5,6 @@ pub struct Vector3 {
     pub z: f64,
 }
 
-pub struct Triangle {
-    pub vertex1: Vector3,
-    pub vertex2: Vector3,
-    pub vertex3: Vector3,
-}
-
 pub fn vec_cross_vec(v1: &Vector3, v2: &Vector3) -> Vector3 {
     Vector3 {
         x: v1.y * v2.z - v1.z * v2.y,

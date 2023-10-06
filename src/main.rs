@@ -5,6 +5,7 @@ use std::collections::{HashMap, HashSet};
 mod intersection;
 mod io;
 mod tiles;
+mod triangle;
 mod vector;
 
 #[macro_use]

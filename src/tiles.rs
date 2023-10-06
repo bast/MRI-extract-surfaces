@@ -1,8 +1,10 @@
 use std::collections::{HashMap, HashSet};
 
+use crate::triangle::Triplet;
 use crate::vector::Vector3;
 
-type Triple = (usize, usize, usize);
+type TileIndexMap = HashMap<(isize, isize), HashSet<usize>>;
+type TileTripletMap = HashMap<(isize, isize), HashSet<Triplet>>;
 
 pub fn get_step_sizes(num_steps: usize, coordinates: &[Vector3]) -> Vector3 {
     let large_number = f64::MAX;
@@ -38,7 +40,7 @@ pub fn distribute_points_to_tiles(
     coordinates: &[Vector3],
     step_x: f64,
     step_z: f64,
-) -> HashMap<(isize, isize), HashSet<usize>> {
+) -> TileIndexMap {
     let mut mapping = HashMap::new();
 
     for (i, point) in coordinates.iter().enumerate() {
@@ -53,10 +55,10 @@ pub fn distribute_points_to_tiles(
 
 pub fn distribute_triangles_to_tiles(
     coordinates: &[Vector3],
-    triangles: &HashSet<Triple>,
+    triangles: &HashSet<Triplet>,
     step_x: f64,
     step_z: f64,
-) -> HashMap<(isize, isize), HashSet<Triple>> {
+) -> TileTripletMap {
     let mut mapping = HashMap::new();
 
     for (a, b, c) in triangles {

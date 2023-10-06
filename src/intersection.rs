@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
-use crate::vector::{vec_cross_vec, vec_dot_vec, vec_minus_vec, Triangle, Vector3};
+use crate::triangle::Triangle;
+use crate::vector::{vec_cross_vec, vec_dot_vec, vec_minus_vec, Vector3};
 
 pub fn ray_intersects_batch(
     ray_origin: &Vector3,
