@@ -67,6 +67,35 @@ fn main() {
 
     let (coordinates, triangles) = remove_unused_points(&coordinates, &outside_triangles);
     io::write_mesh("smaller-data.txt", &coordinates, &triangles);
+
+    let closest_index = closest_index_noddy(
+        &Vector3 {
+            x: 20.0,
+            y: 20.0,
+            z: 60.0,
+        },
+        &coordinates,
+    );
+
+    println!("Closest point is {:?}", coordinates[closest_index]);
+}
+
+fn closest_index_noddy(point: &Vector3, coordinates: &[Vector3]) -> usize {
+    let mut closest_distance = f64::MAX;
+    let mut closest_index = 0;
+    for (i, coordinate) in coordinates.iter().enumerate() {
+        let dx = point.x - coordinate.x;
+        let dy = point.y - coordinate.y;
+        let dz = point.z - coordinate.z;
+
+        let d2 = dx * dx + dy * dy + dz * dz;
+
+        if d2 < closest_distance {
+            closest_index = i;
+            closest_distance = d2;
+        }
+    }
+    closest_index
 }
 
 fn remove_unused_points(
