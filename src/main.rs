@@ -2,35 +2,25 @@
 
 use std::collections::{HashMap, HashSet};
 
+mod intersection;
 mod io;
+mod vector;
 
 #[macro_use]
 extern crate anyhow;
-
-struct Vector3 {
-    x: f64,
-    y: f64,
-    z: f64,
-}
-
-struct Triangle {
-    vertex1: Vector3,
-    vertex2: Vector3,
-    vertex3: Vector3,
-}
 
 fn main() {
     let (coordinates, triangles) = io::read_mesh("data.txt").unwrap();
 
     let num_steps = 100;
 
-    let ray_direction = Vector3 {
+    let ray_direction = vector::Vector3 {
         x: 0.0,
         y: 1.0,
         z: 0.0,
     };
 
-    let ray_direction_opposite = Vector3 {
+    let ray_direction_opposite = vector::Vector3 {
         x: 0.0,
         y: -1.0,
         z: 0.0,
@@ -49,13 +39,13 @@ fn main() {
             let y = coordinates[*point_index].1;
             let z = coordinates[*point_index].2;
 
-            if ray_intersects_batch(
-                &Vector3 { x, y, z },
+            if intersection::ray_intersects_batch(
+                &vector::Vector3 { x, y, z },
                 &ray_direction,
                 &coordinates,
                 triangles,
-            ) && ray_intersects_batch(
-                &Vector3 { x, y, z },
+            ) && intersection::ray_intersects_batch(
+                &vector::Vector3 { x, y, z },
                 &ray_direction_opposite,
                 &coordinates,
                 triangles,
@@ -74,38 +64,6 @@ fn main() {
 
     // FIXME: can be compacted further by removing unused points
     io::write_mesh("smaller-data.txt", &coordinates, &outside_triangles);
-}
-
-fn ray_intersects_batch(
-    ray_origin: &Vector3,
-    ray_direction: &Vector3,
-    coordinates: &[(f64, f64, f64)],
-    triangles: &HashSet<(usize, usize, usize)>,
-) -> bool {
-    for (a, b, c) in triangles {
-        let triangle = Triangle {
-            vertex1: Vector3 {
-                x: coordinates[*a].0,
-                y: coordinates[*a].1,
-                z: coordinates[*a].2,
-            },
-            vertex2: Vector3 {
-                x: coordinates[*b].0,
-                y: coordinates[*b].1,
-                z: coordinates[*b].2,
-            },
-            vertex3: Vector3 {
-                x: coordinates[*c].0,
-                y: coordinates[*c].1,
-                z: coordinates[*c].2,
-            },
-        };
-        if ray_intersects_triangle(ray_origin, ray_direction, &triangle) {
-            return true;
-        }
-    }
-
-    false
 }
 
 fn get_step_sizes(num_steps: usize, coordinates: &Vec<(f64, f64, f64)>) -> (f64, f64) {
@@ -182,71 +140,6 @@ fn distribute_triangles_to_tiles(
     }
 
     mapping
-}
-
-fn vec_cross_vec(v1: &Vector3, v2: &Vector3) -> Vector3 {
-    Vector3 {
-        x: v1.y * v2.z - v1.z * v2.y,
-        y: v1.z * v2.x - v1.x * v2.z,
-        z: v1.x * v2.y - v1.y * v2.x,
-    }
-}
-
-fn vec_minus_vec(v1: &Vector3, v2: &Vector3) -> Vector3 {
-    Vector3 {
-        x: v1.x - v2.x,
-        y: v1.y - v2.y,
-        z: v1.z - v2.z,
-    }
-}
-
-fn vec_dot_vec(v1: &Vector3, v2: &Vector3) -> f64 {
-    v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
-}
-
-// written following https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-fn ray_intersects_triangle(
-    ray_origin: &Vector3,
-    ray_direction: &Vector3,
-    triangle: &Triangle,
-) -> bool {
-    // let epsilon = f64::EPSILON;
-    let epsilon = 0.0000001;
-
-    let edge1 = vec_minus_vec(&triangle.vertex2, &triangle.vertex1);
-    let edge2 = vec_minus_vec(&triangle.vertex3, &triangle.vertex1);
-
-    let h = vec_cross_vec(ray_direction, &edge2);
-    let a = vec_dot_vec(&edge1, &h);
-
-    if a > -epsilon && a < epsilon {
-        // ray is parallel to triangle
-        return false;
-    }
-
-    let f = 1.0 / a;
-    let s = vec_minus_vec(ray_origin, &triangle.vertex1);
-    let u = f * vec_dot_vec(&s, &h);
-
-    if u < 0.0 {
-        // intersection point is outside triangle
-        return false;
-    }
-    if u > 1.0 {
-        // intersection point is outside triangle
-        return false;
-    }
-
-    let q = vec_cross_vec(&s, &edge1);
-    let v = f * vec_dot_vec(ray_direction, &q);
-
-    if v < 0.0 || u + v > 1.0 {
-        return false;
-    }
-
-    let t = f * vec_dot_vec(&edge2, &q);
-
-    t > epsilon
 }
 
 fn tile_index(value: f64, origin_value: f64, step: f64) -> isize {
