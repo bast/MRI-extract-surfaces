@@ -1,6 +1,6 @@
 #![allow(clippy::type_complexity)]
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 mod intersection;
 mod io;
@@ -63,6 +63,36 @@ fn main() {
         }
     }
 
-    // FIXME: can be compacted further by removing unused points
-    io::write_mesh("smaller-data.txt", &coordinates, &outside_triangles);
+    let (coordinates, triangles) = remove_unused_points(&coordinates, &outside_triangles);
+    io::write_mesh("smaller-data.txt", &coordinates, &triangles);
+}
+
+fn remove_unused_points(
+    coordinates: &[(f64, f64, f64)],
+    triangles: &HashSet<(usize, usize, usize)>,
+) -> (Vec<(f64, f64, f64)>, HashSet<(usize, usize, usize)>) {
+    let used_indices: HashSet<usize> = triangles
+        .iter()
+        .flat_map(|&(a, b, c)| vec![a, b, c])
+        .collect();
+
+    let mut used_indices: Vec<usize> = used_indices.into_iter().collect();
+    used_indices.sort_unstable();
+
+    let mut new_points = Vec::new();
+    let mut point_index_map: HashMap<usize, usize> = HashMap::new();
+    for (i, j) in used_indices.iter().enumerate() {
+        point_index_map.insert(*j, i);
+        new_points.push(coordinates[*j]);
+    }
+
+    let mut new_triangles: HashSet<(usize, usize, usize)> = HashSet::new();
+    for (a, b, c) in triangles {
+        let a_new = *point_index_map.get(a).unwrap();
+        let b_new = *point_index_map.get(b).unwrap();
+        let c_new = *point_index_map.get(c).unwrap();
+        new_triangles.insert((a_new, b_new, c_new));
+    }
+
+    (new_points, new_triangles)
 }
