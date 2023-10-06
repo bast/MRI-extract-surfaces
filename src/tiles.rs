@@ -1,10 +1,46 @@
 use std::collections::{HashMap, HashSet};
 
+use crate::intersection;
 use crate::triangle::Triplet;
 use crate::vector::Vector3;
 
 type TileIndexMap = HashMap<(isize, isize), HashSet<usize>>;
 type TileTripletMap = HashMap<(isize, isize), HashSet<Triplet>>;
+
+pub fn find_inside_points(
+    coordinates: &[Vector3],
+    tiles_to_points: &TileIndexMap,
+    tiles_to_triangles: &TileTripletMap,
+    ray_direction: &Vector3,
+    ray_direction_opposite: &Vector3,
+) -> HashSet<usize> {
+    let mut inside_points = HashSet::new();
+
+    for &(ix, iz) in tiles_to_points.keys() {
+        let triangles = &tiles_to_triangles[&(ix, iz)];
+        for point_index in &tiles_to_points[&(ix, iz)] {
+            let x = coordinates[*point_index].x;
+            let y = coordinates[*point_index].y;
+            let z = coordinates[*point_index].z;
+
+            if intersection::ray_intersects_batch(
+                &Vector3 { x, y, z },
+                ray_direction,
+                coordinates,
+                triangles,
+            ) && intersection::ray_intersects_batch(
+                &Vector3 { x, y, z },
+                ray_direction_opposite,
+                coordinates,
+                triangles,
+            ) {
+                inside_points.insert(*point_index);
+            }
+        }
+    }
+
+    inside_points
+}
 
 pub fn get_step_sizes(num_steps: usize, coordinates: &[Vector3]) -> Vector3 {
     let large_number = f64::MAX;

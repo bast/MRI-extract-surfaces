@@ -1,5 +1,3 @@
-#![allow(clippy::type_complexity)]
-
 use std::collections::{HashMap, HashSet};
 
 mod intersection;
@@ -8,6 +6,9 @@ mod tiles;
 mod triangle;
 mod vector;
 
+use crate::triangle::Triplet;
+use crate::vector::Vector3;
+
 #[macro_use]
 extern crate anyhow;
 
@@ -15,47 +16,47 @@ fn main() {
     let (coordinates, triangles) = io::read_mesh("data.txt").unwrap();
 
     let num_steps = 100;
-
-    let ray_direction = vector::Vector3 {
-        x: 0.0,
-        y: 1.0,
-        z: 0.0,
-    };
-
-    let ray_direction_opposite = vector::Vector3 {
-        x: 0.0,
-        y: -1.0,
-        z: 0.0,
-    };
-
     let step = tiles::get_step_sizes(num_steps, &coordinates);
-    let (_, tiles_to_points_along_y) = tiles::distribute_points_to_tiles(&coordinates, step);
-    let (_, tiles_to_triangles_along_y) =
+
+    let (tiles_to_points_along_x, tiles_to_points_along_y) =
+        tiles::distribute_points_to_tiles(&coordinates, step);
+    let (tiles_to_triangles_along_x, tiles_to_triangles_along_y) =
         tiles::distribute_triangles_to_tiles(&coordinates, &triangles, step);
 
-    let mut inside_points = HashSet::new();
-    for &(ix, iz) in tiles_to_points_along_y.keys() {
-        let triangles = &tiles_to_triangles_along_y[&(ix, iz)];
-        for point_index in &tiles_to_points_along_y[&(ix, iz)] {
-            let x = coordinates[*point_index].x;
-            let y = coordinates[*point_index].y;
-            let z = coordinates[*point_index].z;
+    let inside_points_along_x = tiles::find_inside_points(
+        &coordinates,
+        &tiles_to_points_along_x,
+        &tiles_to_triangles_along_x,
+        &Vector3 {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+        },
+        &Vector3 {
+            x: -1.0,
+            y: 0.0,
+            z: 0.0,
+        },
+    );
+    let inside_points_along_y = tiles::find_inside_points(
+        &coordinates,
+        &tiles_to_points_along_y,
+        &tiles_to_triangles_along_y,
+        &Vector3 {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+        },
+        &Vector3 {
+            x: 0.0,
+            y: -1.0,
+            z: 0.0,
+        },
+    );
 
-            if intersection::ray_intersects_batch(
-                &vector::Vector3 { x, y, z },
-                &ray_direction,
-                &coordinates,
-                triangles,
-            ) && intersection::ray_intersects_batch(
-                &vector::Vector3 { x, y, z },
-                &ray_direction_opposite,
-                &coordinates,
-                triangles,
-            ) {
-                inside_points.insert(*point_index);
-            }
-        }
-    }
+    let inside_points: HashSet<_> = inside_points_along_x
+        .intersection(&inside_points_along_y)
+        .collect();
 
     let mut outside_triangles = HashSet::new();
     for (a, b, c) in &triangles {
@@ -69,9 +70,9 @@ fn main() {
 }
 
 fn remove_unused_points(
-    coordinates: &[vector::Vector3],
-    triangles: &HashSet<(usize, usize, usize)>,
-) -> (Vec<vector::Vector3>, HashSet<(usize, usize, usize)>) {
+    coordinates: &[Vector3],
+    triangles: &HashSet<Triplet>,
+) -> (Vec<Vector3>, HashSet<Triplet>) {
     let used_indices: HashSet<usize> = triangles
         .iter()
         .flat_map(|&(a, b, c)| vec![a, b, c])
@@ -87,7 +88,7 @@ fn remove_unused_points(
         new_points.push(coordinates[*j]);
     }
 
-    let mut new_triangles: HashSet<(usize, usize, usize)> = HashSet::new();
+    let mut new_triangles: HashSet<Triplet> = HashSet::new();
     for (a, b, c) in triangles {
         let a_new = *point_index_map.get(a).unwrap();
         let b_new = *point_index_map.get(b).unwrap();
