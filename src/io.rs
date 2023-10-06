@@ -6,9 +6,9 @@ use std::collections::HashSet;
 use std::fs;
 use std::io::{BufWriter, Write};
 
-pub fn read_mesh(
-    file_name: &str,
-) -> Result<(Vec<(f64, f64, f64)>, HashSet<(usize, usize, usize)>)> {
+use crate::vector::Vector3;
+
+pub fn read_mesh(file_name: &str) -> Result<(Vec<Vector3>, HashSet<(usize, usize, usize)>)> {
     let error_message = format!("something went wrong reading file {}", file_name);
     let contents = fs::read_to_string(file_name).context(error_message.to_string())?;
     let mut lines = contents.lines();
@@ -24,7 +24,7 @@ pub fn read_mesh(
         let x: f64 = words[0].parse().context(error_message.to_string())?;
         let y: f64 = words[1].parse().context(error_message.to_string())?;
         let z: f64 = words[2].parse().context(error_message.to_string())?;
-        points.push((x, y, z));
+        points.push(Vector3 { x, y, z });
     }
 
     let mut triangles = HashSet::new();
@@ -45,15 +45,15 @@ pub fn read_mesh(
 
 pub fn write_mesh(
     file_name: &str,
-    coordinates: &Vec<(f64, f64, f64)>,
+    coordinates: &Vec<Vector3>,
     triangles: &HashSet<(usize, usize, usize)>,
 ) {
     let mut f = BufWriter::new(fs::File::create(file_name).expect("unable to create file"));
 
     // write points
     writeln!(f, "{}", coordinates.len()).expect("unable to write data");
-    for (x, y, z) in coordinates {
-        writeln!(f, "{} {} {}", x, y, z).expect("unable to write data");
+    for point in coordinates {
+        writeln!(f, "{} {} {}", point.x, point.y, point.z).expect("unable to write data");
     }
 
     // write triangles

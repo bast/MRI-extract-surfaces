@@ -1,35 +1,49 @@
 use std::collections::{HashMap, HashSet};
 
-pub fn get_step_sizes(num_steps: usize, coordinates: &Vec<(f64, f64, f64)>) -> (f64, f64) {
+use crate::vector::Vector3;
+
+type Triple = (usize, usize, usize);
+
+pub fn get_step_sizes(num_steps: usize, coordinates: &[Vector3]) -> Vector3 {
     let large_number = f64::MAX;
+
     let mut x_min = large_number;
     let mut x_max = -large_number;
+    let mut y_min = large_number;
+    let mut y_max = -large_number;
     let mut z_min = large_number;
     let mut z_max = -large_number;
 
-    for (x, _, z) in coordinates {
-        x_min = x_min.min(*x);
-        x_max = x_max.max(*x);
-        z_min = z_min.min(*z);
-        z_max = z_max.max(*z);
+    for point in coordinates {
+        x_min = x_min.min(point.x);
+        x_max = x_max.max(point.x);
+        y_min = y_min.min(point.y);
+        y_max = y_max.max(point.y);
+        z_min = z_min.min(point.z);
+        z_max = z_max.max(point.z);
     }
 
     let step_x = (x_max - x_min) / num_steps as f64;
+    let step_y = (y_max - y_min) / num_steps as f64;
     let step_z = (z_max - z_min) / num_steps as f64;
 
-    (step_x, step_z)
+    Vector3 {
+        x: step_x,
+        y: step_y,
+        z: step_z,
+    }
 }
 
 pub fn distribute_points_to_tiles(
-    coordinates: &[(f64, f64, f64)],
+    coordinates: &[Vector3],
     step_x: f64,
     step_z: f64,
 ) -> HashMap<(isize, isize), HashSet<usize>> {
     let mut mapping = HashMap::new();
 
-    for (i, (x, _, z)) in coordinates.iter().enumerate() {
-        let ix = tile_index(*x, 0.0, step_x);
-        let iz = tile_index(*z, 0.0, step_z);
+    for (i, point) in coordinates.iter().enumerate() {
+        let ix = tile_index(point.x, 0.0, step_x);
+        let iz = tile_index(point.z, 0.0, step_z);
 
         mapping.entry((ix, iz)).or_insert(HashSet::new()).insert(i);
     }
@@ -38,20 +52,20 @@ pub fn distribute_points_to_tiles(
 }
 
 pub fn distribute_triangles_to_tiles(
-    coordinates: &[(f64, f64, f64)],
-    triangles: &HashSet<(usize, usize, usize)>,
+    coordinates: &[Vector3],
+    triangles: &HashSet<Triple>,
     step_x: f64,
     step_z: f64,
-) -> HashMap<(isize, isize), HashSet<(usize, usize, usize)>> {
+) -> HashMap<(isize, isize), HashSet<Triple>> {
     let mut mapping = HashMap::new();
 
     for (a, b, c) in triangles {
-        let ax = coordinates[*a].0;
-        let az = coordinates[*a].2;
-        let bx = coordinates[*b].0;
-        let bz = coordinates[*b].2;
-        let cx = coordinates[*c].0;
-        let cz = coordinates[*c].2;
+        let ax = coordinates[*a].x;
+        let az = coordinates[*a].z;
+        let bx = coordinates[*b].x;
+        let bz = coordinates[*b].z;
+        let cx = coordinates[*c].x;
+        let cz = coordinates[*c].z;
 
         let triangle_x_min = ax.min(bx).min(cx);
         let triangle_x_max = ax.max(bx).max(cx);

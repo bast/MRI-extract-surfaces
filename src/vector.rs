@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 pub struct Vector3 {
     pub x: f64,
     pub y: f64,

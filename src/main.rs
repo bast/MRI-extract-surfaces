@@ -27,18 +27,18 @@ fn main() {
         z: 0.0,
     };
 
-    let (step_x, step_z) = tiles::get_step_sizes(num_steps, &coordinates);
-    let tiles_to_points = tiles::distribute_points_to_tiles(&coordinates, step_x, step_z);
+    let step = tiles::get_step_sizes(num_steps, &coordinates);
+    let tiles_to_points = tiles::distribute_points_to_tiles(&coordinates, step.x, step.z);
     let tiles_to_triangles =
-        tiles::distribute_triangles_to_tiles(&coordinates, &triangles, step_x, step_z);
+        tiles::distribute_triangles_to_tiles(&coordinates, &triangles, step.x, step.z);
 
     let mut inside_points = HashSet::new();
     for &(ix, iz) in tiles_to_points.keys() {
         let triangles = &tiles_to_triangles[&(ix, iz)];
         for point_index in &tiles_to_points[&(ix, iz)] {
-            let x = coordinates[*point_index].0;
-            let y = coordinates[*point_index].1;
-            let z = coordinates[*point_index].2;
+            let x = coordinates[*point_index].x;
+            let y = coordinates[*point_index].y;
+            let z = coordinates[*point_index].z;
 
             if intersection::ray_intersects_batch(
                 &vector::Vector3 { x, y, z },
@@ -68,9 +68,9 @@ fn main() {
 }
 
 fn remove_unused_points(
-    coordinates: &[(f64, f64, f64)],
+    coordinates: &[vector::Vector3],
     triangles: &HashSet<(usize, usize, usize)>,
-) -> (Vec<(f64, f64, f64)>, HashSet<(usize, usize, usize)>) {
+) -> (Vec<vector::Vector3>, HashSet<(usize, usize, usize)>) {
     let used_indices: HashSet<usize> = triangles
         .iter()
         .flat_map(|&(a, b, c)| vec![a, b, c])
