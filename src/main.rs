@@ -1,3 +1,4 @@
+use clap::Parser;
 use std::collections::{HashMap, HashSet};
 
 mod intersection;
@@ -12,8 +13,23 @@ use crate::vector::Vector3;
 #[macro_use]
 extern crate anyhow;
 
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Input file
+    #[arg(short, long)]
+    input_file: String,
+
+    /// Output file
+    #[arg(short, long)]
+    output_file: String,
+}
+
 fn main() {
-    let (coordinates, triangles) = io::read_mesh("data.txt").unwrap();
+    let args = Args::parse();
+
+    let (coordinates, triangles) = io::read_mesh(&args.input_file).unwrap();
 
     let num_steps = 100;
     let step = tiles::get_step_sizes(num_steps, &coordinates);
@@ -66,7 +82,7 @@ fn main() {
     }
 
     let (coordinates, triangles) = remove_unused_points(&coordinates, &outside_triangles);
-    io::write_mesh("smaller-data.txt", &coordinates, &triangles);
+    io::write_mesh(&args.output_file, &coordinates, &triangles);
 }
 
 fn remove_unused_points(
