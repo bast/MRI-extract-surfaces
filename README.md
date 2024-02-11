@@ -22,18 +22,27 @@ Here is an example:
 $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
 ```
 
-This reads `T1_ernie.nii.gz` and creates a directory `ernie_data`. On my
-computer the process takes ca. 1 hour.
+The above example reads `T1_ernie.nii.gz` and creates a directory `ernie_data`.
+On my computer the process takes ca. 1 hour.
 
-The generated directory contains the following files (the actual file names can be different):
+The generated directory `ernie_data` contains the following files (the actual
+file names can be different):
+```
+ernie_data/
+├── 1001.txt
+├── 1002.txt
+├── 1003.txt
+├── 1005.txt
+├── 1006.txt
+├── 1007.txt
+├── 1008.txt
+├── 1009.txt
+├── 1010.txt
+└── outside-only.txt
 ```
 
-```
-(document me ...)
-
-
-It also creates another folder (document me ...)
-
+It also creates another folder `m2m_T1_ernie` containing many output files from
+[SimNIBS](https://simnibs.github.io/simnibs/).
 
 
 ## Where to get an example input file
