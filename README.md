@@ -1,4 +1,4 @@
-# ray
+# MRI-extract-surfaces
 
 Set of scripts to extract mesh surfaces from a T1-weighted MRI scan. The
 surfaces are then used in another project: https://github.com/bast/tms-location
