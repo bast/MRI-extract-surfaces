@@ -3,7 +3,7 @@ From: ubuntu:22.04
 
 
 %files
-    read.py /software/read.py
+    convert-format/read.py /software/read.py
 
 
 %post
