@@ -6,8 +6,11 @@ surfaces are then used in another project: https://github.com/bast/tms-location
 
 ## Requirements
 
-You need an installation of [Apptainer](https://apptainer.org/) following
-https://apptainer.org/docs/user/latest/quick_start.html#quick-installation.
+You need an installation of [Apptainer](https://apptainer.org/) (e.g. following
+the [quick
+installation](https://apptainer.org/docs/user/latest/quick_start.html#quick-installation)).
+Alternatively, [SingularityCE](https://sylabs.io/singularity/) should also
+work.
 
 
 ## How to use it
