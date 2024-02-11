@@ -1,7 +1,7 @@
 # ray
 
-Set of scripts to extract mesh surfaces from a T1-weighted MRI scan.  The
-surfaces are then used in another project (to be linked soon).
+Set of scripts to extract mesh surfaces from a T1-weighted MRI scan. The
+surfaces are then used in another project: https://github.com/bast/tms-location
 
 
 ## Requirements
@@ -17,7 +17,11 @@ https://apptainer.org/docs/user/latest/quick_start.html#quick-installation.
 
 ## Where to get an example input file
 
-`wget https://github.com/simnibs/example-dataset/releases/latest/download/simnibs4_examples.zip`
+You can get the `T1_ernie.nii.gz` file by downloading and then extracting the
+[example dataset](https://simnibs.github.io/simnibs/build/html/dataset.html):
+```bash
+$ wget https://github.com/simnibs/example-dataset/releases/latest/download/simnibs4_examples.zip
+```
 
 
 ## Please cite [SimNIBS](https://simnibs.github.io/simnibs/) if you use this container
