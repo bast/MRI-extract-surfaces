@@ -1,0 +1,73 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+
+%files
+    read.py /software/read.py
+
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update -y
+    apt-get install -y wget unzip curl build-essential
+
+    # install rust
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+    # all built software will be collected here
+    mkdir /software
+
+    # simnibs
+    mkdir /deleteme && cd /deleteme
+    wget https://github.com/simnibs/simnibs/releases/download/v4.0.1/simnibs_installer_linux.tar.gz
+    tar xf simnibs_installer_linux.tar.gz
+    cd simnibs_installer
+    ./install -s -t /software/simnibs
+    rm -rf /deleteme
+
+    # ray
+    mkdir /deleteme && cd /deleteme
+    ray_version="aca2051359fc1f6c7f5064eebf13d8b703d06f71"
+    wget https://github.com/bast/ray/archive/${ray_version}.zip
+    unzip ${ray_version}.zip
+    cd ray-${ray_version}
+    . $HOME/.cargo/env
+    cargo build --release
+    mv /deleteme/ray-${ray_version}/target/release/ray /software
+    rm -rf /deleteme
+
+
+%runscript
+    export PATH=/software/simnibs/bin:$PATH
+    export PATH=/software/:$PATH
+
+    if [ $# -ne 2 ]; then
+        echo "This script expects two arguments. Usage: $0 INPUT_FILE OUTPUT_PATH"
+        exit 1
+    fi
+
+    input_file=$1
+    output_path=$2
+
+    # check the file pattern and exit if it does not match
+    case "${input_file}" in
+        *.nii.gz) echo "Input file: ${input_file}" ;;
+        *)        echo "ERROR: file suffix for ${input_file} is expected to be *.nii.gz" ; exit 1 ;;
+    esac
+
+    input_file_prefix=$(basename $input_file .nii.gz)
+
+    # this produces a msh file
+    charm --forcerun --forceqform ${input_file_prefix} ${input_file}
+
+    # extract surfaces
+    simnibs_python /software/read.py --input-mesh="m2m_${input_file_prefix}/${input_file_prefix}.msh" --output-path="${output_path}"
+
+    # create outside surface
+    ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only.txt
+    rm -f ${output_path}/all.txt
+
+
+%help
+    example:
+    $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
