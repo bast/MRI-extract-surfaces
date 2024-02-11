@@ -17,7 +17,8 @@ work.
 
 ## How to use it
 
-First download the container image from here: https://github.com/bast/MRI-extract-surfaces/releases
+First download the container image (ending with *.sif) from here:
+https://github.com/bast/MRI-extract-surfaces/releases
 
 Here is an example which uses the container with the `T1_ernie.nii.gz` example
 data file:
