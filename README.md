@@ -4,6 +4,12 @@ Set of scripts to extract mesh surfaces from a T1-weighted MRI scan.  The
 surfaces are then used in another project (to be linked soon).
 
 
+## Requirements
+
+You need an installation of [Apptainer](https://apptainer.org/) following
+https://apptainer.org/docs/user/latest/quick_start.html#quick-installation.
+
+
 ## Please cite [SimNIBS](https://simnibs.github.io/simnibs/) if you use this container
 
 I am not affiliated with [SimNIBS](https://simnibs.github.io/simnibs/) but this
