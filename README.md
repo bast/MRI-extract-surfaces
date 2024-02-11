@@ -1,6 +1,7 @@
 # ray
 
-I use this to remove points inside meshes.
+Set of scripts to extract mesh surfaces from a T1-weighted MRI scan.  The
+surfaces are then used in another project (to be linked soon).
 
 
 ## Please cite [SimNIBS](https://simnibs.github.io/simnibs/) if you use this container
