@@ -10,6 +10,11 @@ You need an installation of [Apptainer](https://apptainer.org/) following
 https://apptainer.org/docs/user/latest/quick_start.html#quick-installation.
 
 
+## How to use it
+
+(write me ...)
+
+
 ## Please cite [SimNIBS](https://simnibs.github.io/simnibs/) if you use this container
 
 I am not affiliated with [SimNIBS](https://simnibs.github.io/simnibs/) but this
