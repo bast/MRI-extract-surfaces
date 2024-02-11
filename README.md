@@ -1,7 +1,8 @@
 # MRI-extract-surfaces
 
-Set of scripts to extract mesh surfaces from a T1-weighted MRI scan. The
-surfaces are then used in another project: https://github.com/bast/tms-location
+Set of containerized scripts to extract mesh surfaces from a T1-weighted MRI
+scan. The surfaces are then used in another project:
+https://github.com/bast/tms-location
 
 
 ## Requirements
@@ -15,7 +16,23 @@ work.
 
 ## How to use it
 
-(write me ...)
+Here is an example:
+```bash
+$ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
+```
+
+This reads `T1_ernie.nii.gz` and creates a directory `ernie_data`. On my
+computer the process takes ca. 1 hour.
+
+The generated directory contains the following files (the actual file names can be different):
+```
+
+```
+(document me ...)
+
+
+It also creates another folder (document me ...)
+
 
 
 ## Where to get an example input file
