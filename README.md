@@ -17,7 +17,10 @@ work.
 
 ## How to use it
 
-Here is an example:
+First download the container image from here: https://github.com/bast/MRI-extract-surfaces/releases
+
+Here is an example which uses the container with the `T1_ernie.nii.gz` example
+data file:
 ```bash
 $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
 ```
@@ -25,8 +28,9 @@ $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
 The above example reads `T1_ernie.nii.gz` and creates a directory `ernie_data`.
 On my computer the process takes ca. 1 hour.
 
-The generated directory `ernie_data` contains the following files (the actual
-file names can be different):
+The generated directory `ernie_data` contains the following files (once you
+replace `T1_ernie.nii.gz` with your actual file, the generated file names might
+be different):
 ```
 ernie_data/
 ├── 1001.txt
@@ -41,8 +45,8 @@ ernie_data/
 └── outside-only.txt
 ```
 
-It also creates another folder `m2m_T1_ernie` containing many output files from
-[SimNIBS](https://simnibs.github.io/simnibs/).
+Running the container also creates another folder `m2m_T1_ernie` containing
+many output files from [SimNIBS](https://simnibs.github.io/simnibs/).
 
 
 ## Where to get an example input file
