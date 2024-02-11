@@ -1,7 +1,8 @@
 # MRI-extract-surfaces
 
 Set of containerized scripts to extract mesh surfaces from a T1-weighted MRI
-scan. The surfaces are then used in another project:
+scan. Uses [SimNIBS](https://simnibs.github.io/simnibs/) under the hood, plus
+some smaller scripts.  The surfaces are then used in another project:
 https://github.com/bast/tms-location
 
 
