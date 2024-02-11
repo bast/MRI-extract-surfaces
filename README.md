@@ -1,8 +1,9 @@
 # MRI-extract-surfaces
 
-Set of containerized scripts to extract mesh surfaces from a T1-weighted MRI
-scan. Uses [SimNIBS](https://simnibs.github.io/simnibs/) under the hood, plus
-some smaller scripts.  The surfaces are then used in another project:
+Set of containerized scripts to extract mesh surfaces from a T1-weighted [MRI
+scan](https://en.wikipedia.org/wiki/Magnetic_resonance_imaging).  Uses
+[SimNIBS](https://simnibs.github.io/simnibs/) under the hood, plus some smaller
+scripts.  The surfaces are then used in another project:
 https://github.com/bast/tms-location
 
 
@@ -29,6 +30,12 @@ $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
 The above example reads `T1_ernie.nii.gz` and creates a directory `ernie_data`.
 On my computer the process takes ca. 1 hour.
 
+The output directory does not have to be in the same location and you can do
+this instead:
+```bash
+$ ./extract-surfaces.sif T1_ernie.nii.gz /home/user/somewhere/ernie_data
+```
+
 The generated directory `ernie_data` contains the following files (once you
 replace `T1_ernie.nii.gz` with your actual file, the generated file names might
 be different):
@@ -46,8 +53,9 @@ ernie_data/
 └── outside-only.txt
 ```
 
-Running the container also creates another folder `m2m_T1_ernie` containing
-many output files from [SimNIBS](https://simnibs.github.io/simnibs/).
+Running the container also creates another folder `m2m_T1_ernie` (in the same
+directory as the container image) containing many output files from
+[SimNIBS](https://simnibs.github.io/simnibs/).
 
 
 ## Where to get an example input file
@@ -78,8 +86,9 @@ Italy](http://dx.doi.org/10.1109/EMBC.2015.7318340).
 
 ## About the container image
 
-To build the image, I have used this wonderful guide as starting point and
-inspiration: https://github.com/singularityhub/singularity-deploy
+To build the image, I have used [this wonderful
+guide](https://github.com/singularityhub/singularity-deploy) as starting point
+and inspiration.
 
 I find it important that everybody can verify how the container image was
 built. And you can! You can inspect the definition file and all scripts which
