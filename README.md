@@ -74,3 +74,13 @@ Italy](http://dx.doi.org/10.1109/EMBC.2015.7318340).
 > SimNIBS is a research tool. Clinical usage is not supported or advised. In
 > particular, SimNIBS was not tested to give accurate results in the presence
 > of pathological condition. See also https://simnibs.github.io/simnibs/
+
+
+## About the container image
+
+To build the image, I have used this wonderful guide as starting point and
+inspiration: https://github.com/singularityhub/singularity-deploy
+
+I find it important that everybody can verify how the container image was
+built. And you can! You can inspect the definition file and all scripts which
+are all part of this repository.
