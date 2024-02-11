@@ -6,9 +6,8 @@ surfaces are then used in another project (to be linked soon).
 
 ## Please cite [SimNIBS](https://simnibs.github.io/simnibs/) if you use this container
 
-**I am not affiliated with [SimNIBS](https://simnibs.github.io/simnibs/)** but
-this container uses [SimNIBS](https://simnibs.github.io/simnibs/) under the
-hood.
+I am not affiliated with [SimNIBS](https://simnibs.github.io/simnibs/) but this
+container uses [SimNIBS](https://simnibs.github.io/simnibs/) under the hood.
 
 When you publish results based on SimNIBS, please cite [Thielscher, A.,
 Antunes, A. and Saturnino, G.B. (2015), Field modeling for transcranial
