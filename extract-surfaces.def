@@ -1,9 +1,10 @@
 Bootstrap: docker
-From: ubuntu:22.04
+From: ubuntu:23.04
 
 
 %files
     convert-format/read.py /software/read.py
+    postprocess-mesh/cleanup.py /software/cleanup.py
     create-outside-surface/* /source/create-outside-surface/
 
 
@@ -55,11 +56,19 @@ From: ubuntu:22.04
 
     # check the file pattern and exit if it does not match
     case "${input_file}" in
-        *.nii.gz) echo "Input file: ${input_file}" ;;
-        *)        echo "ERROR: file suffix for ${input_file} is expected to be *.nii.gz" ; exit 1 ;;
+        *.nii.gz)
+            echo "Input file: ${input_file}"
+            input_file_prefix=$(basename $input_file .nii.gz)
+            ;;
+        *.nii)
+            echo "Input file: ${input_file}"
+            input_file_prefix=$(basename $input_file .nii)
+            ;;
+        *)
+            echo "Error: File does not have a .nii or .nii.gz extension."
+            exit 1
+            ;;
     esac
-
-    input_file_prefix=$(basename $input_file .nii.gz)
 
     # this produces a msh file
     charm --forcerun --forceqform ${input_file_prefix} ${input_file}
@@ -68,9 +77,12 @@ From: ubuntu:22.04
     simnibs_python /software/read.py --input-mesh="m2m_${input_file_prefix}/${input_file_prefix}.msh" --output-path="${output_path}"
 
     # create outside surface and remove all.txt
-    ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only.txt
+    ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only-temporary.txt
     rm -f ${output_path}/all.txt
 
+    # post-process the outside surface
+    simnibs_python /software/cleanup.py --input-file ${output_path}/outside-only-temporary.txt --output-file ${output_path}/outside-only.txt
+    rm -f ${output_path}/outside-only-temporary.txt
 
 %help
     example:

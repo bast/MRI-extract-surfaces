@@ -30,6 +30,11 @@ $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
 The above example reads `T1_ernie.nii.gz` and creates a directory `ernie_data`.
 On my computer the process takes ca. 1 hour.
 
+The input-file does not have to be gzipped, you can also use a plain NIfTI file:
+```bash
+$ ./extract-surfaces.sif T1_ernie.nii ernie_data
+```
+
 The output directory does not have to be in the same location and you can do
 this instead:
 ```bash
