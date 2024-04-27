@@ -55,11 +55,19 @@ From: ubuntu:23.04
 
     # check the file pattern and exit if it does not match
     case "${input_file}" in
-        *.nii.gz) echo "Input file: ${input_file}" ;;
-        *)        echo "ERROR: file suffix for ${input_file} is expected to be *.nii.gz" ; exit 1 ;;
+        *.nii.gz)
+            echo "Input file: ${input_file}"
+            input_file_prefix=$(basename $input_file .nii.gz)
+            ;;
+        *.nii)
+            echo "Input file: ${input_file}"
+            input_file_prefix=$(basename $input_file .nii)
+            ;;
+        *)
+            echo "Error: File does not have a .nii or .nii.gz extension."
+            exit 1
+            ;;
     esac
-
-    input_file_prefix=$(basename $input_file .nii.gz)
 
     # this produces a msh file
     charm --forcerun --forceqform ${input_file_prefix} ${input_file}
