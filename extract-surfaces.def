@@ -4,8 +4,8 @@ From: ubuntu:23.04
 
 %files
     convert-format/read.py /software/read.py
-    postprocess-mesh/cleanup.py /software/cleanup.py
     create-outside-surface/* /source/create-outside-surface/
+    postprocess-mesh/* /source/postprocess-mesh/
 
 
 %post
@@ -28,11 +28,15 @@ From: ubuntu:23.04
     ./install -s -t /software/simnibs
     rm -rf /deleteme
 
-    # build the rust component
+    # build the rust components
     cd /source/create-outside-surface
     cargo build --release
     cp target/release/ray /software/ray
     chmod a+x /software/ray
+    cd /source/postprocess-mesh
+    cargo build --release
+    cp target/release/cleanup /software/cleanup
+    chmod a+x /software/cleanup
 
     # make /software readable by all
     chmod -R a+r /software
@@ -81,7 +85,7 @@ From: ubuntu:23.04
     rm -f ${output_path}/all.txt
 
     # post-process the outside surface
-    simnibs_python /software/cleanup.py --input-file ${output_path}/outside-only-temporary.txt --output-file ${output_path}/outside-only.txt
+    cleanup --input-file ${output_path}/outside-only-temporary.txt --output-file ${output_path}/outside-only.txt
     rm -f ${output_path}/outside-only-temporary.txt
 
 %help
