@@ -13,7 +13,6 @@ use crate::vector::Vector3;
 #[macro_use]
 extern crate anyhow;
 
-/// Simple program to greet a person
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
