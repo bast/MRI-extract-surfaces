@@ -21,6 +21,8 @@ work.
 First download the container image (ending with *.sif) from here:
 https://github.com/bast/MRI-extract-surfaces/releases
 
+Then make the container image executable.
+
 Here is an example which uses the container with the `T1_ernie.nii.gz` example
 data file:
 ```bash
