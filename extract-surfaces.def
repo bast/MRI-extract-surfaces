@@ -6,6 +6,7 @@ From: ubuntu:23.04
     convert-format/read.py /software/read.py
     create-outside-surface/* /source/create-outside-surface/
     postprocess-mesh/* /source/postprocess-mesh/
+    VERSION /software/VERSION
 
 
 %post
@@ -87,6 +88,10 @@ From: ubuntu:23.04
     # post-process the outside surface
     cleanup --input-file ${output_path}/outside-only-temporary.txt --output-file ${output_path}/outside-only.txt
     rm -f ${output_path}/outside-only-temporary.txt
+
+    # save version to file
+    cp /software/VERSION ${output_path}/VERSION
+
 
 %help
     example:
