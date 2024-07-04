@@ -57,6 +57,7 @@ ernie_data/
 ├── 1008.txt
 ├── 1009.txt
 ├── 1010.txt
+├── eeg-positions.csv
 ├── outside-only.txt
 └── VERSION
 ```

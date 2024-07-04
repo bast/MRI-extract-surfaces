@@ -4,6 +4,7 @@ From: ubuntu:23.04
 
 %files
     convert-format/read.py /software/read.py
+    eeg-positions/extract-eeg-positions.py /software/extract-eeg-positions.py
     create-outside-surface/* /source/create-outside-surface/
     postprocess-mesh/* /source/postprocess-mesh/
     VERSION /software/VERSION
@@ -80,6 +81,9 @@ From: ubuntu:23.04
 
     # extract surfaces
     simnibs_python /software/read.py --input-mesh="m2m_${input_file_prefix}/${input_file_prefix}.msh" --output-path="${output_path}"
+
+    # save EEG positions
+    simnibs_python /software/extract-eeg-positions.py "m2m_${input_file_prefix}/eeg_positions/EEG10-10_Cutini_2011.csv" > ${output_path}/eeg-positions.csv
 
     # create outside surface and remove all.txt
     ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only-temporary.txt
