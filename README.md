@@ -57,7 +57,9 @@ ernie_data/
 ├── 1008.txt
 ├── 1009.txt
 ├── 1010.txt
-└── outside-only.txt
+├── eeg-positions.csv
+├── outside-only.txt
+└── VERSION
 ```
 
 Running the container also creates another folder `m2m_T1_ernie` (in the same
