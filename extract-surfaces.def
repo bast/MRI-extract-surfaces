@@ -24,7 +24,7 @@ From: ubuntu:23.04
 
     # install simnibs
     mkdir /deleteme && cd /deleteme
-    wget https://github.com/simnibs/simnibs/releases/download/v4.0.1/simnibs_installer_linux.tar.gz
+    wget https://github.com/simnibs/simnibs/releases/download/v4.1.0/simnibs_installer_linux.tar.gz
     tar xf simnibs_installer_linux.tar.gz
     cd simnibs_installer
     ./install -s -t /software/simnibs
