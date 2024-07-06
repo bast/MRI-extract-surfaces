@@ -82,6 +82,12 @@ From: ubuntu:23.04
     # save version to file
     cp /software/VERSION ${output_path}/VERSION
 
+    # save files which are needed for conversion from MNI coordinates
+    mkdir ${output_path}/m2m_data/
+    cp -r m2m_${m2m_suffix}/toMNI ${output_path}/m2m_data/
+    cp m2m_${m2m_suffix}/*nii* ${output_path}/m2m_data/
+    cp m2m_${m2m_suffix}/*.msh ${output_path}/m2m_data/data.msh
+
 
 %help
     example:
