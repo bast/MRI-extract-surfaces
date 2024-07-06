@@ -56,6 +56,14 @@ ernie_data/
 ├── 1009.txt
 ├── 1010.txt
 ├── eeg-positions.csv
+├── m2m_data
+│   ├── data.msh
+│   ├── final_tissues.nii.gz
+│   ├── T1.nii.gz
+│   └── toMNI
+│       ├── Conform2MNI_nonl.nii.gz
+│       ├── final_tissues_MNI.nii.gz
+│       └── MNI2Conform_nonl.nii.gz
 ├── outside-only.txt
 └── VERSION
 ```
