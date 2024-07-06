@@ -52,38 +52,24 @@ From: ubuntu:23.04
     export PATH=/software/simnibs/bin:$PATH
     export PATH=/software:$PATH
 
-    if [ $# -ne 2 ]; then
-        echo "This script expects two arguments. Usage: $0 INPUT_FILE OUTPUT_PATH"
+    m2m_suffix=$1
+    output_path=$2
+
+    # check the number of arguments and produce a msh file
+    if [ $# -eq 3 ]; then
+        charm --forcerun --forceqform ${m2m_suffix} $3
+    elif [ $# -eq 4 ]; then
+        charm --forcerun --forceqform ${m2m_suffix} $3 $4
+    else
+        echo "This script expects 3 or 4 arguments. Usage: $0 M2M_SUFFIX OUTPUT_PATH T1_FILE [T2_FILE]"
         exit 1
     fi
 
-    input_file=$1
-    output_path=$2
-
-    # check the file pattern and exit if it does not match
-    case "${input_file}" in
-        *.nii.gz)
-            echo "Input file: ${input_file}"
-            input_file_prefix=$(basename $input_file .nii.gz)
-            ;;
-        *.nii)
-            echo "Input file: ${input_file}"
-            input_file_prefix=$(basename $input_file .nii)
-            ;;
-        *)
-            echo "Error: File does not have a .nii or .nii.gz extension."
-            exit 1
-            ;;
-    esac
-
-    # this produces a msh file
-    charm --forcerun --forceqform ${input_file_prefix} ${input_file}
-
     # extract surfaces
-    simnibs_python /software/read.py --input-mesh="m2m_${input_file_prefix}/${input_file_prefix}.msh" --output-path="${output_path}"
+    simnibs_python /software/read.py --input-mesh="m2m_${m2m_suffix}/${m2m_suffix}.msh" --output-path="${output_path}"
 
     # save EEG positions
-    simnibs_python /software/extract-eeg-positions.py "m2m_${input_file_prefix}/eeg_positions/EEG10-10_Cutini_2011.csv" > ${output_path}/eeg-positions.csv
+    simnibs_python /software/extract-eeg-positions.py "m2m_${m2m_suffix}/eeg_positions/EEG10-10_Cutini_2011.csv" > ${output_path}/eeg-positions.csv
 
     # create outside surface and remove all.txt
     ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only-temporary.txt
@@ -99,4 +85,4 @@ From: ubuntu:23.04
 
 %help
     example:
-    $ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
+    $ ./extract-surfaces.sif ernie /home/user/ernie_data T1_ernie.nii.gz

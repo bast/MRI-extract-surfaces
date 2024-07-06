@@ -1,7 +1,7 @@
 # MRI-extract-surfaces
 
-Set of containerized scripts to extract mesh surfaces from a T1-weighted [MRI
-scan](https://en.wikipedia.org/wiki/Magnetic_resonance_imaging).  Uses
+Set of containerized scripts to extract mesh surfaces from T1/T2-weighted [MRI
+scans](https://en.wikipedia.org/wiki/Magnetic_resonance_imaging).  Uses
 [SimNIBS](https://simnibs.github.io/simnibs/) under the hood, plus some smaller
 scripts.  The surfaces are then used in another project:
 https://github.com/bast/tms-location
@@ -19,33 +19,31 @@ work.
 ## How to use it
 
 First download the container image (ending with *.sif) from here:
-https://github.com/bast/MRI-extract-surfaces/releases
-
-Then make the container image executable.
+https://github.com/bast/MRI-extract-surfaces/releases - then make the container image executable.
 
 Here is an example which uses the container with the `T1_ernie.nii.gz` example
 data file:
 ```bash
-$ ./extract-surfaces.sif T1_ernie.nii.gz ernie_data
+$ ./extract-surfaces.sif ernie /home/user/ernie_data T1_ernie.nii.gz
 ```
 
-The above example reads `T1_ernie.nii.gz` and creates a directory `ernie_data`.
-On my computer the process takes 30-60 minutes.
+The above example reads `T1_ernie.nii.gz` and creates the directories
+`m2m_ernie` and `/home/user/ernie_data`.  On my computer the process takes
+30-60 minutes.  The folder `m2m_ernie` is created in the same directory as the
+container image and contains many output files from
+[SimNIBS](https://simnibs.github.io/simnibs/).
 
 The input-file does not have to be gzipped, you can also use a plain NIfTI file:
 ```bash
-$ ./extract-surfaces.sif T1_ernie.nii ernie_data
+$ ./extract-surfaces.sif ernie /home/user/ernie_data T1_ernie.nii
 ```
 
-The output directory does not have to be in the same location and you can do
-this instead:
+If you have a T2-weighted MRI scan as well, you can use both T1 and T2 data as input:
 ```bash
-$ ./extract-surfaces.sif T1_ernie.nii.gz /home/user/somewhere/ernie_data
+$ ./extract-surfaces.sif ernie /home/user/ernie_data T1.nii.gz T2.nii.gz
 ```
 
-The generated directory `ernie_data` contains the following files (once you
-replace `T1_ernie.nii.gz` with your actual file, the generated file names might
-be different):
+The generated directory `/home/user/ernie_data` contains the following files:
 ```
 ernie_data/
 ├── 1001.txt
@@ -62,15 +60,10 @@ ernie_data/
 └── VERSION
 ```
 
-Running the container also creates another folder `m2m_T1_ernie` (in the same
-directory as the container image) containing many output files from
-[SimNIBS](https://simnibs.github.io/simnibs/).
-
 
 ## Where to get an example input file
 
-You can get the `T1_ernie.nii.gz` file by downloading and then extracting the
-[example dataset](https://simnibs.github.io/simnibs/build/html/dataset.html):
+You can get the [example dataset](https://simnibs.github.io/simnibs/build/html/dataset.html) like this:
 ```bash
 $ wget https://github.com/simnibs/example-dataset/releases/latest/download/simnibs4_examples.zip
 ```
