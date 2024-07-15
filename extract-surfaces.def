@@ -11,7 +11,7 @@ From: ubuntu:23.04
 
 
 %post
-    # basic settions
+    # basic settings
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -y
 
@@ -66,18 +66,18 @@ From: ubuntu:23.04
     fi
 
     # extract surfaces
-    simnibs_python /software/read.py --input-mesh="m2m_${m2m_suffix}/${m2m_suffix}.msh" --output-path="${output_path}"
+    simnibs_python /software/read.py --input-mesh="m2m_${m2m_suffix}/${m2m_suffix}.msh" --output-path="${output_path}/meshes"
 
     # save EEG positions
     simnibs_python /software/extract-eeg-positions.py "m2m_${m2m_suffix}/eeg_positions/EEG10-10_Cutini_2011.csv" > ${output_path}/eeg-positions.csv
 
     # create outside surface and remove all.txt
-    ray --input-file ${output_path}/all.txt --output-file ${output_path}/outside-only-temporary.txt
-    rm -f ${output_path}/all.txt
+    ray --input-file ${output_path}/meshes/all.txt --output-file ${output_path}/meshes/outside-only-temporary.txt
+    rm -f ${output_path}/meshes/all.txt
 
     # post-process the outside surface
-    cleanup --input-file ${output_path}/outside-only-temporary.txt --output-file ${output_path}/outside-only.txt
-    rm -f ${output_path}/outside-only-temporary.txt
+    cleanup --input-file ${output_path}/meshes/outside-only-temporary.txt --output-file ${output_path}/meshes/outside-only.txt
+    rm -f ${output_path}/meshes/outside-only-temporary.txt
 
     # save version to file
     cp /software/VERSION ${output_path}/VERSION
