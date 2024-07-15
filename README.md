@@ -46,16 +46,21 @@ $ ./extract-surfaces.sif ernie /home/user/ernie_data T1.nii.gz T2.nii.gz
 The generated directory `/home/user/ernie_data` contains the following files:
 ```
 ernie_data/
-├── 1001.txt
-├── 1002.txt
-├── 1003.txt
-├── 1005.txt
-├── 1006.txt
-├── 1007.txt
-├── 1008.txt
-├── 1009.txt
-├── 1010.txt
-├── eeg-positions.csv
+├── eeg-positions
+│   ├── easycap_BC_TMS64_X21.csv
+│   ├── easycap_BC_TMS64_X21.geo
+│   ├── EEG10-10_Cutini_2011.csv
+│   ├── EEG10-10_Cutini_2011.geo
+│   ├── EEG10-10_Neuroelectrics.csv
+│   ├── EEG10-10_Neuroelectrics.geo
+│   ├── EEG10-10_UI_Jurak_2007.csv
+│   ├── EEG10-10_UI_Jurak_2007.geo
+│   ├── EEG10-20_extended_SPM12.csv
+│   ├── EEG10-20_extended_SPM12.geo
+│   ├── EEG10-20_Okamoto_2004.csv
+│   ├── EEG10-20_Okamoto_2004.geo
+│   ├── Fiducials.csv
+│   └── Fiducials.geo
 ├── m2m_data
 │   ├── data.msh
 │   ├── final_tissues.nii.gz
@@ -64,7 +69,17 @@ ernie_data/
 │       ├── Conform2MNI_nonl.nii.gz
 │       ├── final_tissues_MNI.nii.gz
 │       └── MNI2Conform_nonl.nii.gz
-├── outside-only.txt
+├── meshes
+│   ├── 1001.txt
+│   ├── 1002.txt
+│   ├── 1003.txt
+│   ├── 1005.txt
+│   ├── 1006.txt
+│   ├── 1007.txt
+│   ├── 1008.txt
+│   ├── 1009.txt
+│   ├── 1010.txt
+│   └── outside-surface.txt
 └── VERSION
 ```
 
